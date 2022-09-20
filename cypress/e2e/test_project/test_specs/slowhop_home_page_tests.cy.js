@@ -1,205 +1,215 @@
+import { BasePage } from "../../../pages/base_page_slowhop";
+import { CatalogPage } from "../../../pages/catalog_page_slowhop";
+import { EventsPage } from "../../../pages/events_page_slowhop";
+import { EventDetailsPage } from "../../../pages/event_details_page_slowhop";
+import { HomePage } from "../../../pages/home_page_slowhop";
+import { LastMinutePage } from "../../../pages/last_minute_page_slowhop";
 
 describe('Smoke tests set', () => {
 
+    const basePage = new BasePage();
+    const homePage = new HomePage();
+    const eventsPage = new EventsPage();
+    const lastMinutePage = new LastMinutePage();
+    const eventDetailsPage = new EventDetailsPage();
+    const catalogPage = new CatalogPage();
+
+    const textForAddress = 'Poland';
+    const urlLastMinuteToValidate = '/last-minute/v2';
+    const urlEventsToValidate = '/wydarzenia/';
 
     beforeEach(() => {
-        cy.visit('https://slowhop.com/pl/')
+        homePage.navigateToSlowhop();
     });
 
     it('visits the Slowhop.pl and verifies the navigation bar', () => {
         
-        cy.get('.nav-item.pull-left li')
+        homePage.getNavigationBarItems()
                     .should('have.length', 5)
                     .and('contain.text', 'MIEJSCA')
                     .and('contain.text', 'WYDARZENIA')
                     .and('contain.text', 'MAPA')
                     .and('contain.text', 'POMYSŁY')
-                    .and('contain.text', 'LAST MINUTE')
+                    .and('contain.text', 'LAST MINUTE');
 
-        cy.get('.logo-container')
-                    .find('a').should('have.attr', 'href')
+        homePage.getLogoContainer()
+                    .find('a').should('have.attr', 'href');
 
-        cy.get('.logo-container')
-                    .find('.svg-icon svg')
+        homePage.getLogoContainer()
+                    .find(homePage.logoSvg());
 
-        cy.get('.nav-item.navbar-right').first()
+        homePage.getRightSideNav().first()
                     .find('li')
                     .should('have.length', 4)
                     .and('contain.text', 'O NAS')
                     .and('contain.text', 'ZALOGUJ SIĘ')
                     .and('contain.text', 'DODAJ OFERTĘ')
                     .eq(3)
-                    .find('button.langs-s__trigger')
-                    .should('exist')
-
-
+                    .find(homePage.selectLanguage())
+                    .should('exist');
     });
 
     it('checks the first event at Wydarzenia tab', () => {
 
         let firstEventTitle = '';
 
-        cy.get('.navbar-header > .nav-item > :nth-child(2) > a').click()
-        cy.get('#search-results').should('exist')
+        homePage.navigateToEvents();
 
-        cy.get('#search-results').find('div.row div.search-product--text h5').eq(0).then(($el) => {
-            firstEventTitle = $el.text()
+        eventsPage.getSearchResults().should('exist');
 
-            cy.get('#search-results a.search-product').eq(0).invoke('removeAttr', 'target').click()
-            cy.url().should('include', '/wydarzenia/')
-    
-            cy.get('.product--info--heading h1').should('have.text', firstEventTitle)
-        })
+        eventsPage.getSearchResults()
+                    .find(eventsPage.getEventsTitleInTable())
+                    .eq(0)
+                    .then(($el) => {
+
+                        firstEventTitle = $el.text()
+
+                        eventsPage.getEventToCLick()
+                                    .eq(0)
+                                    .invoke('removeAttr', 'target')
+                                    .click();
+
+                        basePage.validateUrlContains(urlEventsToValidate);
+
+                        eventsPage.validateEventTitle(firstEventTitle);
+                    })
     });
 
-
     it('checks the first item at Last Minute tab', () => {
-        cy.get('.navbar-header .nav-item > li > a').eq(4)
+        homePage.getLastMinuteLink()
                     .should('have.class', 'red')
                     .click()
-                    .should('not.exist')
+                    .should('not.exist');
 
-        cy.get('h1.main-title').should('have.text', 'Last minute')
-        cy.url().should('include', '/last-minute')
+        lastMinutePage.validateMainTitle();
 
-        cy.get('.grid-results__tiles')
-                        .find('.catalog-tile span.catalog-tile__sticker--thunder')
-                        .should('contain.text', 'Instant booking')
+        lastMinutePage.validateUrl();
 
-        cy.get('.grid-results__tiles')
-                        .find('.catalog-tile__link')
+        lastMinutePage.validateInstantBookingLabel();
+
+        lastMinutePage.getResultsTable()
+                        .find(lastMinutePage.eventDetailsLink())
                         .first()
                         .invoke('removeAttr', 'target')
-                        .click()
-        cy.url().should('include', '/last-minute/v2')
+                        .click();
 
-        cy.get('.booking-request-info').should('exist')
+        basePage.validateUrlContains(urlLastMinuteToValidate);
 
-        cy.get('.booking-interlocutor-info')
-                        .find('h1')
-                        .should('have.text', 'About place')
+        eventDetailsPage.getBookingRequestSection().should('exist');
 
-        cy.get('.offer-info')
-                        .find('.price-container__description h2')
-                        .should('contain.text', 'Total price for the stay')
+        eventDetailsPage.validateAboutPlaceSectionTitle();
 
-        cy.get('.rules-info')
-                        .find('h1')
-                        .should('have.text', 'Terms and cancellation rules')
+        eventDetailsPage.validateTotalPriceText();
 
-        cy.get('.payment-methods')
-                        .find('h1')
-                        .should('have.text', 'Payment methods')
+        eventDetailsPage.validateTermsCancellationText();
 
-        cy.get('.booking-layout__aside')
-                        .find('.sticky-box button')
-                        .should('contain', 'Go to payment')
+        eventDetailsPage.validatePaymentMethodsTitle();
+
+        eventDetailsPage.validateGoToPaymentText();
         
-        cy.get('.sticky-box > .w-100').click()
-        cy.get('#login-modal___BV_modal_content_')
-                        .should('be.visible')
-                        .then(($obj) => {
-                            
-                            expect($obj).to.be.visible
-                            expect($obj).to.contain('Log in')
-                            expect($obj).to.contain('Email')
-                            expect($obj).to.contain('Password')
-                            expect($obj).to.have.descendants('.btn--orange.w-100')
-                            expect($obj).to.have.descendants('.btn-facebook')
-                        })
+        eventDetailsPage.clickGoToPaymentBtn();
+
+        eventDetailsPage.getLoginPopupWindow()
+                            .should('be.visible')
+                            .then(($obj) => {
+                                
+                                expect($obj).to.be.visible;
+                                expect($obj).to.contain('Log in');
+                                expect($obj).to.contain('Email');
+                                expect($obj).to.contain('Password');
+                                expect($obj).to.have.descendants(eventDetailsPage.loginBtn());
+                                expect($obj).to.have.descendants(eventDetailsPage.loginWithFacebookBtn());
+                            });
                         
-        cy.get('body').click(0,0)
+        basePage.clickOnScreenFReeSpace();
         
-        cy.get('#login-modal___BV_modal_content_').should('not.exist')
-    })
+        eventDetailsPage.getLoginPopupWindow().should('not.exist');
+    });
 
     it('checks the search filter', () => {
-        cy.get('.main-text-container a').click()
+        homePage.clickExploreAndBookBtn();
 
-        cy.get('#where') 
-                    .click()
-                    .should('be.visible')
-                    .next()
-                    .find('.result-links__item a')
-                    .first()
-                    .then(($field) => {
+        catalogPage.getPlacesField()
+                        .click()
+                        .should('be.visible')
+                        .next()
+                        .find(catalogPage.placesFieldItems())
+                        .first()
+                        .then(($field) => {
 
-                        let value = $field.text().trim();
-                        cy.get($field).click()
-                        cy.get('#where').should('have.value', value)
-                    })
-                    
-        cy.get('#range-datepicker-inline-trigger')
+                            let value = $field.text().trim();
+                            cy.get($field).click();
+                            catalogPage.getPlacesField().should('have.value', value);
+                        });
+                        
+        catalogPage.getDatesField()
                         .then(($obj) => {
 
                             let today = new Date();
-                            let dateFrom = today.getFullYear() + '-' + ('0' + (today.getMonth() + 1)).slice(-2) + '-' + ('0' + today.getDate()).slice(-2)
+                            let dateFrom = today.getFullYear() + '-' + ('0' + (today.getMonth() + 1)).slice(-2) + '-' 
+                                            + ('0' + today.getDate()).slice(-2);
                             
-                            let today2 = new Date();
-                            today2.setDate(today2.getDate() + 2 * 7);
+                            let todayInTwoWeeks = new Date();
+                            todayInTwoWeeks.setDate(todayInTwoWeeks.getDate() + 2 * 7);
 
-                            let dateTo = today2.getFullYear() + '-' + ('0' + (today2.getMonth() + 1)).slice(-2) + '-' + ('0' + today2.getDate()).slice(-2)
+                            let dateTo = todayInTwoWeeks.getFullYear() + '-' + ('0' + (todayInTwoWeeks.getMonth() + 1)).slice(-2) 
+                                            + '-' + ('0' + todayInTwoWeeks.getDate()).slice(-2);
                                                         
                             let dateLocatorFrom = '[date=' + '"' + dateFrom + '"]'
                             let dateLocatorTo = '[date=' + '"' + dateTo + '"]'
 
-                            cy.get($obj).find('.search-bar__btn')
-                            .click()
+                            cy.get($obj).find(catalogPage.datesInputField())
+                                            .click();
 
-                            cy.get($obj).find('.calendar-range')
-                            .should('be.visible')
-                            .find(dateLocatorFrom)
-                            .click()
+                            cy.get($obj).find(catalogPage.calendarRange())
+                                            .should('be.visible')
+                                            .find(dateLocatorFrom)
+                                            .click();
 
-                            cy.get($obj).find('.calendar-range')
-                            .should('be.visible')
-                            .find(dateLocatorTo)
-                            .click()
+                            cy.get($obj).find(catalogPage.calendarRange())
+                                            .should('be.visible')
+                                            .find(dateLocatorTo)
+                                            .click();
 
                             
                             const month = today.toLocaleString('default', { month: 'short' });
-                            const month2 = today2.toLocaleString('default', { month: 'short' });
+                            const month2 = todayInTwoWeeks.toLocaleString('default', { month: 'short' });
 
-                            let dateFilled = ('0' + today.getDate()).slice(-2) + ' ' + month + ' ' + today.getFullYear() + ' ' + '-' + ' ' + ('0' + today2.getDate()).slice(-2) + ' ' + month2 + ' ' + today2.getFullYear()
+                            let dateFilled = ('0' + today.getDate()).slice(-2) + ' ' + month + ' ' + today.getFullYear() + ' ' 
+                                                + '-' + ' ' + ('0' + todayInTwoWeeks.getDate()).slice(-2) + ' ' + month2 + ' ' 
+                                                + todayInTwoWeeks.getFullYear();
 
-                            cy.get($obj).find('.search-bar-text').then(($date) => {
-                                let dateText = $date.text();
+                            cy.get($obj).find(catalogPage.dateInputText())
+                                            .then(($date) => {
 
-                                expect(dateText).to.contain(dateFilled)
-
-                            })
-                        })
+                                                let dateText = $date.text();
+                                                expect(dateText).to.contain(dateFilled);
+                                            });
+                        });
                     
-
-                        cy.get('.search-bar-col').eq(2)
+                        catalogPage.getGuestsSelectPopup()
                             .then(($obj) => {
 
                                 cy.get($obj).click()
-                                .find('.guest-picker-options')
-                                .should('be.visible')
-                                .find('.guest-picker-row-buttons svg')
-                                .eq(1)
-                                .click()
+                                    .find(catalogPage.guestPickerOptions())
+                                    .should('be.visible')
+                                    .find(catalogPage.selectNumberBtn())
+                                    .eq(1)
+                                    .click();
 
-                                cy.get('.advanced-options--show')
-                                .find('.advanced-options__footer button')
-                                .eq(1)
-                                .click()
+                                cy.get(catalogPage.guestsPickerWindow())
+                                    .find(catalogPage.advancedOptionsButtons())
+                                    .eq(1)
+                                    .click();
 
-                                cy.get('.guest-picker-options')
-                                .should('not.be.visible')
-
-                                cy.get('.search-button')
-                                .click()
-
-                                cy.get('h1.main-title')
-                                .should('have.text', 'Poland')
-
-                                cy.get('.catalog-tile__content address')
-                                .should('contain.text', 'Poland')
+                                cy.get(catalogPage.guestPickerOptions())
+                                .should('not.be.visible');
                             })
+
+                            catalogPage.clickSearchBtn();
+
+                            catalogPage.validateMainTitleText(textForAddress);
+
+                            catalogPage.validateItemsAddress(textForAddress);
     })
-
-
-
 });
