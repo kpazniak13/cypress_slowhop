@@ -1,9 +1,9 @@
-import { BasePage } from "../../../pages/base_page_slowhop";
-import { CatalogPage } from "../../../pages/catalog_page_slowhop";
-import { EventsPage } from "../../../pages/events_page_slowhop";
-import { EventDetailsPage } from "../../../pages/event_details_page_slowhop";
-import { HomePage } from "../../../pages/home_page_slowhop";
-import { LastMinutePage } from "../../../pages/last_minute_page_slowhop";
+import { BasePage } from "../../pages/base_page_slowhop";
+import { CatalogPage } from "../../pages/catalog_page_slowhop";
+import { EventsPage } from "../../pages/events_page_slowhop";
+import { EventDetailsPage } from "../../pages/event_details_page_slowhop";
+import { HomePage } from "../../pages/home_page_slowhop";
+import { LastMinutePage } from "../../pages/last_minute_page_slowhop";
 
 describe('Smoke tests set', () => {
 
