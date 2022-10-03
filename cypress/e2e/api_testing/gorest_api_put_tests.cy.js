@@ -6,7 +6,41 @@ describe('WHen I test all the PUT operations on Gorest User table', () => {
     let randomEmailEditted = faker.internet.email();
     let genderEditted = "female";
     let statusEditted = "inactive";
-    
+    let dataSetValuesName = [{
+            "value": "123",
+            "status": 200
+        },
+        {
+            "value": "$%^&",
+            "status": 200
+        },
+        {
+            "value": 123456789,
+            "status": 200
+        },
+        {
+            "value": " ",
+            "status": 422
+        },
+        {
+            "value": "",
+            "status": 422
+        }
+    ]
+    let dataSetValuesEmail = [{
+            "value": "123",
+            "status": 422
+        },
+        {
+            "value": "123@.",
+            "status": 422
+        },
+        {
+            "value": " ",
+            "status": 422
+        }
+    ]
+
     before(() => {
         cy.createAPIUser('api_gorest')
             .then((data) => {
@@ -37,38 +71,46 @@ describe('WHen I test all the PUT operations on Gorest User table', () => {
         })
     });
 
-    it('Then updating the email with incorrect value throws error', () => {
-        cy.request({
-            method: 'PUT',
-            auth: {
-                bearer: Cypress.env('bearerToken')
-            },
-            failOnStatusCode: false,
-            url: `https://gorest.co.in/public/v2/users/${userId}`,
-            body: {
-                email: 123
-            }
-        })
-        .then(response => {
-            expect(response.status).to.equal(422);
-        })
+    context("Updtaing name field", () => {
+        dataSetValuesEmail.forEach((item) => {
+            it(`Then updating the email with ${item.value} returns status ${item.status}`, () => {
+                cy.request({
+                    method: 'PUT',
+                    auth: {
+                        bearer: Cypress.env('bearerToken')
+                    },
+                    failOnStatusCode: false,
+                    url: `https://gorest.co.in/public/v2/users/${userId}`,
+                    body: {
+                        email: item.value
+                    }
+                })
+                .then(response => {
+                    expect(response.status).to.equal(item.status);
+                });
+            });
+        });
     });
 
-    it('Then updating the name with special characters works correctly', () => {
-        cy.request({
-            method: 'PUT',
-            auth: {
-                bearer: Cypress.env('bearerToken')
-            },
-            failOnStatusCode: false,
-            url: `https://gorest.co.in/public/v2/users/${userId}`,
-            body: {
-                name: "~$#@"
-            }
-        })
-        .then(response => {
-            expect(response.status).to.equal(200);
-        })
+    context("Updtaing name field", () => {
+        dataSetValuesName.forEach((item) => {
+            it(`Then updating the name with ${item.value} returns status ${item.status}`, () => {
+                cy.request({
+                    method: 'PUT',
+                    auth: {
+                        bearer: Cypress.env('bearerToken')
+                    },
+                    failOnStatusCode: false,
+                    url: `https://gorest.co.in/public/v2/users/${userId}`,
+                    body: {
+                        name: item.value
+                    }
+                })
+                .then(response => {
+                    expect(response.status).to.equal(item.status);
+                });
+            });
+        });
     });
 
     it('Then updating the name on incorrect endpoint throws error', () => {
@@ -85,23 +127,6 @@ describe('WHen I test all the PUT operations on Gorest User table', () => {
         })
         .then(response => {
             expect(response.status).to.equal(404);
-        })
-    });
-
-    it('Then updating the name with empty string throws error', () => {
-        cy.request({
-            method: 'PUT',
-            auth: {
-                bearer: Cypress.env('bearerToken')
-            },
-            failOnStatusCode: false,
-            url: `https://gorest.co.in/public/v2/users/${userId}`,
-            body: {
-                name: ""
-            }
-        })
-        .then(response => {
-            expect(response.status).to.equal(422);
-        })
+        });
     });
 });
