@@ -1,4 +1,4 @@
-describe('WHen I test all the PUT operations on Gorest User table', () => {
+describe('WHen I test all the DELETE operations on Gorest User table', () => {
     let userId;
      
     before(() => {
@@ -51,6 +51,7 @@ describe('WHen I test all the PUT operations on Gorest User table', () => {
         })
         .then(response => {
             expect(response.status).to.equal(204);
+            expect(response.body).to.be.empty;
         })
     });
 });
