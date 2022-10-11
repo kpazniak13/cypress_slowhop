@@ -12,6 +12,21 @@ const searchBtn = '.search-button';
 const pageMainTitle = 'h1.main-title';
 const tableAddresses  = '.catalog-tile__content address';
 const placesFieldItems = '.result-links__item a';
+const placesInput = '.search-bar-input';
+const placesList = '.result-links__list li';
+const dateLocatorStart = '[date="';
+const dateLocatorEnd = '"]';
+const catalogListTable = '.catalog-tile';
+const filtersContainer = '.filters.container';
+const filtersButton = '.search-bar__btn--filters';
+const filterLocationOptionText = 'In which location?';
+const filterFoodOptionText = 'What about food?';
+const parametersFilterContainer = '.filters__parameters--only-desktop'
+const filterFoodCheckboxesLocators = {
+    'Self catering': '#food_main-no_food',
+    'Vegan cuisine only': '#food_main-only-vegan'
+}
+const serachBarBtn = 'search-bar__btn';
 
 export class CatalogPage {
 
@@ -28,7 +43,7 @@ export class CatalogPage {
     }
 
     getGuestsField() {
-        return cy.get('search-bar__btn').eq(2)
+        return cy.get(serachBarBtn).eq(2)
     }
 
     datesInputField() {
@@ -64,7 +79,7 @@ export class CatalogPage {
     }
 
     validateMainTitleText(text) {
-        cy.get(pageMainTitle).should('have.text', text);
+        cy.get(pageMainTitle).should('contain.text', text);
     }
 
     pageMainTitle() {
@@ -77,5 +92,144 @@ export class CatalogPage {
 
     placesFieldItems() {
         return placesFieldItems;
+    }
+
+    getPlacesList() {
+        return cy.get(placesList);
+    }
+
+    filtersButtonClick() {
+        return cy.get(filtersButton).click();
+    }
+
+    searchBy(fieldName, object) {
+        switch(fieldName) {
+            case 'place' :
+                this.getPlacesField()
+                        .click()
+                        .next()
+                        .find(placesInput)
+                        .type(object.place)
+                        .then(() => {
+                            this.getPlacesList()
+                                    .should('contain.text', object.place)
+                                    .first()
+                                    .click();
+                            this.clickSearchBtn();
+                        });
+            break;
+            case 'dates' :
+                this.fillDateFilterField(object.dateFrom, object.dateTo)
+                        .then(() => {
+                            this.clickSearchBtn();
+                        });
+            break;
+            case 'guests' :
+                this.fillGuestsFilterField(object.adults, object.children, object.pets)
+                        .then(() => {
+                            this.clickSearchBtn();
+                        });
+            break;
+            case 'filters' :
+                this.selectFiltersFilter(object.locationFilter, object.food)
+                        .then(() => {
+                            this.clickSearchBtn();
+                        });
+            break;
+        }
+    }
+
+    fillDateFilterField(dateFrom, dateTo) {
+        let dateFromFormatted = dateFrom.toString("yyyy-MM-dd");
+        let dateToFormatted = dateTo.toString("yyyy-MM-dd");
+            
+        return this.getDatesField()
+                .then(($obj) => {
+                    cy.get($obj)
+                        .find(this.datesInputField())
+                        .click();
+                    cy.get($obj)
+                        .find(this.calendarRange())
+                        .should('be.visible')
+                        .find(dateLocatorStart + dateFromFormatted + dateLocatorEnd)
+                        .click();
+                    cy.get($obj)
+                        .find(this.calendarRange())
+                        .should('be.visible')
+                        .find(dateLocatorStart + dateToFormatted + dateLocatorEnd)
+                        .click();
+                });
+    }
+
+    fillGuestsFilterField(adults, children, pets) {
+        return this.getGuestsSelectPopup()
+                .then(($obj) => {
+                    cy.get($obj).click()
+                    if(adults) {
+                        for(let n = 0; n < adults; n++) {
+                            cy.get($obj)
+                                .find(this.guestPickerOptions())
+                                .should('be.visible')
+                                .find(this.selectNumberBtn())
+                                .eq(1)
+                                .click();
+                        }
+                    }
+                    if(children) {
+                        for(let n = 0; n < children; n++) {
+                            cy.get($obj)
+                            .find(this.guestPickerOptions())
+                            .should('be.visible')
+                            .find(this.selectNumberBtn())
+                            .eq(3)
+                            .click();
+                        }
+                    }
+                    if(pets) {
+                        cy.get(this.guestPickerOptions())
+                        .should('not.be.visible');
+                    }
+                });
+    }
+
+    selectFiltersFilter(location, food) {
+        return this.filtersButtonClick()
+                        .then(() => {
+                                if(location) {
+                                    let locationsArray = location.split(', ');
+                                        cy.get(filtersContainer)
+                                            .find(`span:contains(${filterLocationOptionText})`)
+                                            .parent()
+                                            .click()
+                                            .should('be.visible');
+                                                    locationsArray.forEach((item) => {
+                                                        const lastWord = item.split(' ').pop();
+                                                        cy.get(filtersContainer)
+                                                            .find(parametersFilterContainer)
+                                                            .should('contain.text', item)
+                                                            .find(`input[value="${lastWord}"]`)
+                                                            .check();
+                                                    })
+                                }
+                                if(food) {
+                                    let foodsArray = food.split(', ');
+                                    cy.get(filtersContainer)
+                                        .find(`span:contains(${filterFoodOptionText})`)
+                                        .parent()
+                                        .click()
+                                        .should('be.visible');
+                                        foodsArray.forEach((item) => {
+                                                    cy.get(filtersContainer)
+                                                        .find(parametersFilterContainer)
+                                                        .should('contain.text', item)
+                                                        .find(`${filterFoodCheckboxesLocators[item]}`)
+                                                        .check();
+                                                    })
+                                }
+                        });
+    }
+
+    getCatalogListItems() {
+        return cy.get(catalogListTable);
     }
 }

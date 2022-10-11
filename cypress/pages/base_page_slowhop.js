@@ -4,8 +4,7 @@ export class BasePage {
         return cy.url().should('include', text);
     }
 
-    clickOnScreenFReeSpace() {
+    clickOnScreenFreeSpace() {
         cy.get('body').click(0,0);
     }
-
 }

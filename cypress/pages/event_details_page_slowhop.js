@@ -1,3 +1,5 @@
+import { BasePage } from "./base_page_slowhop";
+
 const bookingRequestSection = '.booking-request-info';
 const aboutPlaceSection  = '.booking-interlocutor-info';
 const offerInfoSection = '.offer-info';
@@ -11,7 +13,7 @@ const goToPaymentBtn = '.sticky-box button';
 const loginBtn = '.btn--orange.w-100';
 const loginWithFacebookBtn = '.btn-facebook';
 
-export class EventDetailsPage {
+export class EventDetailsPage extends BasePage {
 
     getBookingRequestSection() {
         return cy.get(bookingRequestSection);
