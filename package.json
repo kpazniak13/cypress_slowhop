@@ -20,5 +20,6 @@
     "eslint-plugin-import": "^2.25.2"
   },
   "dependencies": {
+    "datejs": "^1.0.0-rc3"
   }
 }
