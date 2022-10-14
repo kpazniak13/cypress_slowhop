@@ -1,8 +1,17 @@
 import { faker } from "@faker-js/faker";
+import { API_Functions } from "../../pages/api_functions_page";
 
 describe('WHen I test all the POST operations on Gorest for the User', () => {
     let userData;
-    
+    const api_functions = new API_Functions();
+    const urlsTable = {
+        users: 'https://gorest.co.in/public/v2/users',
+        activeUsersOnly: 'https://gorest.co.in/public/v2/users?status=active',
+        posts: 'https://gorest.co.in/public/v2/posts',
+        comments: 'https://gorest.co.in/public/v2/comments',
+        todos: 'https://gorest.co.in/public/v2/todos'
+    }
+
     before(() => {
         cy.fixture('api_gorest').then((data) => {
             userData = data;
@@ -12,192 +21,128 @@ describe('WHen I test all the POST operations on Gorest for the User', () => {
     });
 
     it('Then it is not possible to create User with filled only "name" field', () => {
-        cy.request({
-            method: 'POST',
-            url: 'https://gorest.co.in/public/v2/users',
-            failOnStatusCode: false,
-            auth: {
-                bearer: Cypress.env('bearerToken')
-            },
-            body: {
-                name: userData.user.name,
-            }
-        })
-        .then(response => {
-            expect(response.status).is.eq(422);
-        })
+        const body = {
+            name: userData.user.name
+        }
+
+        api_functions.createRecordInTable(urlsTable.users, body)
+                        .then(response => {
+                            expect(response.status).is.eq(422);
+                        });
     });
 
     it('Then it is not possible to create User with filled only "email" field', () => {
-        cy.request({
-            method: 'POST',
-            url: 'https://gorest.co.in/public/v2/users',
-            failOnStatusCode: false,
-            auth: {
-                bearer: Cypress.env('bearerToken')
-            },
-            body: {
-                email: userData.user.email,
-            }
-        })
-        .then(response => {
-            expect(response.status).is.eq(422);
-        })
+        const body = {
+            email: userData.user.email
+        }
+
+        api_functions.createRecordInTable(urlsTable.users, body)
+                        .then(response => {
+                            expect(response.status).is.eq(422);
+                        });
     });
 
     it('Then it is not possible to create User with filled only "gender" field', () => {
-        cy.request({
-            method: 'POST',
-            url: 'https://gorest.co.in/public/v2/users',
-            failOnStatusCode: false,
-            auth: {
-                bearer: Cypress.env('bearerToken')
-            },
-            body: {
-                gender: userData.user.gender,
-            }
-        })
-        .then(response => {
-            expect(response.status).is.eq(422);
-        })
+        const body = {
+            gender: userData.user.gender
+        }
+
+        api_functions.createRecordInTable(urlsTable.users, body)
+                        .then(response => {
+                            expect(response.status).is.eq(422);
+                        });
     });
 
     it('Then it is not possible to create User with filled only "status" field', () => {
-        cy.request({
-            method: 'POST',
-            url: 'https://gorest.co.in/public/v2/users',
-            failOnStatusCode: false,
-            auth: {
-                bearer: Cypress.env('bearerToken')
-            },
-            body: {
-                status: userData.user.status,
-            }
-        })
-        .then(response => {
-            expect(response.status).is.eq(422);
-        })
+        const body = {
+            status: userData.user.status
+        }
+
+        api_functions.createRecordInTable(urlsTable.users, body)
+                        .then(response => {
+                            expect(response.status).is.eq(422);
+                        });
     });
 
     it('Then it is not possible to create User with filled only "name" and "email" fields', () => {
-        cy.request({
-            method: 'POST',
-            url: 'https://gorest.co.in/public/v2/users',
-            failOnStatusCode: false,
-            auth: {
-                bearer: Cypress.env('bearerToken')
-            },
-            body: {
-                name: userData.user.name,
-                email: userData.user.email
-            }
-        })
-        .then(response => {
-            expect(response.status).is.eq(422);
-        })
+        const body = {
+            name: userData.user.name,
+            email: userData.user.email
+        }
+
+        api_functions.createRecordInTable(urlsTable.users, body)
+                        .then(response => {
+                            expect(response.status).is.eq(422);
+                        });
     });
 
 
     it('Then it is not possible to create User with filled only "name", "gender" and "email" fields', () => {
-        cy.request({
-            method: 'POST',
-            url: 'https://gorest.co.in/public/v2/users',
-            failOnStatusCode: false,
-            auth: {
-                bearer: Cypress.env('bearerToken')
-            },
-            body: {
-                name: userData.user.name,
-                gender: userData.user.gender,
-                email: userData.user.email
-            }
-        })
-        .then(response => {
-            expect(response.status).is.eq(422);
-        })
+        const body = {
+            name: userData.user.name,
+            gender: userData.user.gender,
+            email: userData.user.email
+        }
+
+        api_functions.createRecordInTable(urlsTable.users, body)
+                        .then(response => {
+                            expect(response.status).is.eq(422);
+                        });
     });
 
     it('Then it is not possible to create User without access token', () => {
-        cy.request({
-            method: 'POST',
-            url: 'https://gorest.co.in/public/v2/users',
-            failOnStatusCode: false,
-            body: {
-                name: userData.user.name,
-                gender: userData.user.gender,
-                email: userData.user.email,
-                status: userData.user.status
-            }
-        })
-        .then(response => {
-            expect(response.status).is.eq(401);
-        })
+        const body = {
+            name: userData.user.name,
+            gender: userData.user.gender,
+            email: userData.user.email,
+            status: userData.user.status
+        }
+
+        api_functions.createRecordInTableNoToken(urlsTable.users, body)
+                        .then(response => {
+                            expect(response.status).is.eq(401);
+                        });
     });
 
     it('Then it is not possible to create User without the correct access token', () => {
-        cy.request({
-            method: 'POST',
-            url: 'https://gorest.co.in/public/v2/users',
-            auth: {
-                bearer: 'notcorrecttoken'
-            },
-            failOnStatusCode: false,
-            body: {
-                name: userData.user.name,
-                gender: userData.user.gender,
-                email: userData.user.email,
-                status: userData.user.status
-            }
-        })
-        .then(response => {
-            expect(response.status).is.eq(401);
-        })
+        const body = {
+            name: userData.user.name,
+            gender: userData.user.gender,
+            email: userData.user.email,
+            status: userData.user.status
+        }
+
+        api_functions.createRecordInTableIncorrectToken(urlsTable.users, body)
+                        .then(response => {
+                            expect(response.status).is.eq(401);
+                        });
     });
 
     it('Then it is not possible to create User with incorrect fields in the request body', () => {
-        cy.request({
-            method: 'POST',
-            url: 'https://gorest.co.in/public/v2/users',
-            auth: {
-                bearer: Cypress.env('bearerToken')
-            },
-            failOnStatusCode: false,
-            body: {
-                surname: userData.user.name,
-                gender: userData.user.gender,
-                email: userData.user.email,
-                status: userData.user.status
-            }
-        })
-        .then(response => {
-            expect(response.status).is.eq(422);
-        })
+        const body = {
+            surname: userData.user.name,
+            gender: userData.user.gender,
+            email: userData.user.email,
+            status: userData.user.status
+        }
+
+        api_functions.createRecordInTable(urlsTable.users, body)
+                        .then(response => {
+                            expect(response.status).is.eq(422);
+                        });
     });
 
     it('Then it is possible to create User with all the fields filled', () => {
-        cy.request({
-            method: 'POST',
-            url: 'https://gorest.co.in/public/v2/users',
-            failOnStatusCode: false,
-            auth: {
-                bearer: Cypress.env('bearerToken')
-            },
-            body: {
-                name: userData.user.name,
-                gender: userData.user.gender,
-                email: userData.user.email,
-                status: userData.user.status
-            }
-        })
-        .then(response => {
-            expect(response.status).is.eq(201);
-        })
+        const body = {
+            name: userData.user.name,
+            gender: userData.user.gender,
+            email: userData.user.email,
+            status: userData.user.status
+        }
+
+        api_functions.createRecordInTable(urlsTable.users, body)
+                        .then(response => {
+                            expect(response.status).is.eq(201);
+                        });
     });
-
-
-
-
-
-
-
 });
