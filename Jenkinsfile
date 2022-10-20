@@ -29,9 +29,9 @@ pipeline {
         }
     }
 
-    // post {
-    //     always {
-    //         publishHTML([allowMissing: false, alwaysLinkToLastBuild: true, keepAll: true, reportDir: 'C:/Katia/cypressIo/Cypress-TestFramework/cypress/report', reportFiles: 'index.html', reportName: 'HTML Report', reportTitles: ''])
-    //     }
-    // }
+    post {
+        always {
+            publishHTML([allowMissing: false, alwaysLinkToLastBuild: true, keepAll: true, reportDir: 'C:/Katia/cypressIo/Cypress-TestFramework/cypress/report', reportFiles: 'index.html', reportName: 'HTML Report', reportTitles: ''])
+        }
+    }
 }
