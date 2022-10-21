@@ -6,6 +6,7 @@
   "scripts": {
     "test": "cypress open",
     "cypress:chrome": "cypress run --browser chrome --spec cypress/e2e/*.cy.js",
+    "cypress:edge": "cypress run --browser edge --spec cypress/e2e/*.cy.js",
     "cleanup": "rm -fr cypress/reports",
     "report:generate": "marge cypress/report -o cypress/report/html"
   },
