@@ -60,7 +60,7 @@ describe('Smoke tests set', () => {
 
     it('visits the Slowhop.pl and verifies the navigation bar', () => {
         homePage.getNavigationBarItems()
-                    .should('have.length', 8)
+                    .should('have.length', 5)
                     .and('contain.text', 'MIEJSCA')
                     .and('contain.text', 'WYDARZENIA')
                     .and('contain.text', 'MAPA')
