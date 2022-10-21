@@ -82,7 +82,7 @@ describe('Smoke tests set', () => {
     });
 
     context('checks events at Wydarzenia tab', () => {
-        it.only('checks the first event', () => {
+        it('checks the first event', () => {
             let firstEventTitle = '';
     
             homePage.navigateToEvents();
