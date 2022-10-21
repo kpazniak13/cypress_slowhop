@@ -6,7 +6,8 @@ module.exports = defineConfig({
     reportDir: 'cypress/report',
     overwrite: true,
     html: false,
-    json: true
+    json: true,
+    embeddedScreenshots: true
   },
   projectId: '61p832',
   env: {
