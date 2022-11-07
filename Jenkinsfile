@@ -31,7 +31,7 @@ pipeline {
 
     post {
         always {
-            publishHTML([allowMissing: false, alwaysLinkToLastBuild: true, keepAll: true, reportDir: 'C:\Katia\repos\cypress_slowhop\cypress\report\', reportFiles: 'index.html', reportName: 'HTML Report', reportTitles: ''])
+            publishHTML([allowMissing: false, alwaysLinkToLastBuild: true, keepAll: true, reportDir: 'C:/Katia/repos/cypress_slowhop/cypress/report/', reportFiles: 'index.html', reportName: 'HTML Report', reportTitles: ''])
         }
     }
 }
