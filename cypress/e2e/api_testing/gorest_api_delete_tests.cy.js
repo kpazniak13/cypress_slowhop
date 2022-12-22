@@ -13,6 +13,7 @@ describe('WHen I test all the DELETE operations on Gorest User table', () => {
             .then((data) => {
                 userId = data.body.id;
             });
+            
     });
 
     it('Then deleting with no auth token provided throws error', () => {

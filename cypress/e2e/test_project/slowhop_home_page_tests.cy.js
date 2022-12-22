@@ -5,12 +5,16 @@ import { HomePage } from "../../pages/home_page_slowhop";
 import { LastMinutePage } from "../../pages/last_minute_page_slowhop";
 require('datejs')
 
-describe('Smoke tests set', () => {
+describe('Smoke tests set for Slowhop.pl', () => {
     const homePage = new HomePage();
     const eventsPage = new EventsPage();
     const lastMinutePage = new LastMinutePage();
     const eventDetailsPage = new EventDetailsPage();
     const catalogPage = new CatalogPage();
+    const data = {
+        magicNumber: 42,
+        examples: true
+    };
     const textForAddress = 'Poland';
     const urlLastMinuteToValidate = '/last-minute/v2';
     const urlEventsToValidate = '/wydarzenia/';
@@ -56,6 +60,12 @@ describe('Smoke tests set', () => {
 
     beforeEach(() => {
         homePage.navigateToSlowhop();
+        cy.allure()
+            .writeEnvironmentInfo(data)
+            .parameter(
+                'initial environment info',
+                JSON.stringify(data, null, 2)
+            );
     });
 
     it('visits the Slowhop.pl and verifies the navigation bar', () => {
@@ -134,6 +144,7 @@ describe('Smoke tests set', () => {
     });
     
     it('checks the first item at Last Minute tab', () => {
+        cy.allure().startStep('step started');
         homePage.getLastMinuteLink()
                     .should('have.class', 'red')
                     .click()
@@ -166,9 +177,11 @@ describe('Smoke tests set', () => {
                             });
         eventDetailsPage.clickOnScreenFreeSpace();
         eventDetailsPage.getLoginPopupWindow().should('not.exist');
+        cy.allure().endStep();
     });
 
     it('checks the search filter', () => {
+        cy.allure().logStep('Started to test filter search');
         homePage.clickExploreAndBookBtn();
         catalogPage.getPlacesField()
                         .click()
@@ -210,11 +223,17 @@ describe('Smoke tests set', () => {
         catalogPage.clickSearchBtn();
         catalogPage.validateMainTitleText(textForAddress);
         catalogPage.validateItemsAddress(textForAddress);
+        cy.allure().logStep('Finished to test filter search');
     });
 
+    it.skip('should be skipped', () => {});
+    
     context('It tests the search filter', () => {
         filterTestData.forEach(element => {
             it(`verifies that the ${element.fieldName} filter and returns correct results`, () => {
+                cy.allure()
+                    .startStep('parameters should be in this step')
+                    .parameter('fieldName', element.fieldName);
                 homePage.clickExploreAndBookBtn();
                 catalogPage.searchBy(element.fieldName, element);
                 catalogPage.getCatalogListItems().should('have.length', 24);
