@@ -1,3 +1,6 @@
 node_modules
 **/report
 **/videos
+screenshots
+allure-report/**
+allure-results/**
