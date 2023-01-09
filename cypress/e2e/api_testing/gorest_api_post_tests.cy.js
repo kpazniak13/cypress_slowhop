@@ -1,7 +1,7 @@
 import { faker } from "@faker-js/faker";
 import { API_Functions } from "../../pages/api_functions_page";
 
-describe('WHen I test all the POST operations on Gorest for the User', () => {
+describe('POST operations on Gorest for the User', () => {
     let userData;
     const api_functions = new API_Functions();
     const urlsTable = {
@@ -18,9 +18,14 @@ describe('WHen I test all the POST operations on Gorest for the User', () => {
             userData.user.name = faker.name.fullName();
             userData.user.email = faker.internet.email();
         });
+        cy.allure()
+            .epic('API calls')
+            .feature('Gorest application')
+            .suite('Gorest API tests suite')
+            .subSuite('POST operation');
     });
 
-    it('Then it is not possible to create User with filled only "name" field', () => {
+    it('Veryfying that it is not possible to create User with filled only "name" field', () => {
         const body = {
             name: userData.user.name
         }
@@ -31,7 +36,7 @@ describe('WHen I test all the POST operations on Gorest for the User', () => {
                         });
     });
 
-    it('Then it is not possible to create User with filled only "email" field', () => {
+    it('Veryfying that it is not possible to create User with filled only "email" field', () => {
         const body = {
             email: userData.user.email
         }
@@ -42,7 +47,7 @@ describe('WHen I test all the POST operations on Gorest for the User', () => {
                         });
     });
 
-    it('Then it is not possible to create User with filled only "gender" field', () => {
+    it('Veryfying that it is not possible to create User with filled only "gender" field', () => {
         const body = {
             gender: userData.user.gender
         }
@@ -53,7 +58,7 @@ describe('WHen I test all the POST operations on Gorest for the User', () => {
                         });
     });
 
-    it('Then it is not possible to create User with filled only "status" field', () => {
+    it('Veryfying that it is not possible to create User with filled only "status" field', () => {
         const body = {
             status: userData.user.status
         }
@@ -64,7 +69,7 @@ describe('WHen I test all the POST operations on Gorest for the User', () => {
                         });
     });
 
-    it('Then it is not possible to create User with filled only "name" and "email" fields', () => {
+    it('Veryfying that it is not possible to create User with filled only "name" and "email" fields', () => {
         const body = {
             name: userData.user.name,
             email: userData.user.email
@@ -77,7 +82,7 @@ describe('WHen I test all the POST operations on Gorest for the User', () => {
     });
 
 
-    it('Then it is not possible to create User with filled only "name", "gender" and "email" fields', () => {
+    it('Veryfying that it is not possible to create User with filled only "name", "gender" and "email" fields', () => {
         const body = {
             name: userData.user.name,
             gender: userData.user.gender,
@@ -90,7 +95,7 @@ describe('WHen I test all the POST operations on Gorest for the User', () => {
                         });
     });
 
-    it('Then it is not possible to create User without access token', () => {
+    it('Veryfying that it is not possible to create User without access token', () => {
         const body = {
             name: userData.user.name,
             gender: userData.user.gender,
@@ -104,7 +109,7 @@ describe('WHen I test all the POST operations on Gorest for the User', () => {
                         });
     });
 
-    it('Then it is not possible to create User without the correct access token', () => {
+    it('Veryfying that it is not possible to create User without the correct access token', () => {
         const body = {
             name: userData.user.name,
             gender: userData.user.gender,
@@ -118,7 +123,7 @@ describe('WHen I test all the POST operations on Gorest for the User', () => {
                         });
     });
 
-    it('Then it is not possible to create User with incorrect fields in the request body', () => {
+    it('Veryfying that it is not possible to create User with incorrect fields in the request body', () => {
         const body = {
             surname: userData.user.name,
             gender: userData.user.gender,
@@ -132,7 +137,7 @@ describe('WHen I test all the POST operations on Gorest for the User', () => {
                         });
     });
 
-    it('Then it is possible to create User with all the fields filled', () => {
+    it('Veryfying that it is possible to create User with all the fields filled', () => {
         const body = {
             name: userData.user.name,
             gender: userData.user.gender,

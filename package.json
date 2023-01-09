@@ -4,12 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "cypress:chrome": "cypress run --browser chrome --spec cypress/e2e/test_project/*.cy.js --env allure=true",
+    "cypress:chrome": "cypress run --browser chrome --env allure=true",
     "cypress:edge": "cypress run --browser edge --spec cypress/e2e/*.cy.js",
     "allure:clear": "del /q allure-results",
     "allure:report": "allure generate allure-results --clean -o allure-report",
     "test:allure": "npm run allure:clear && npm run cypress:chrome",
-    "allure:history": "mv -f allure-report/history allure-results/history && rm -r allure-report || true"
+    "allure:history": "mv -f allure-report/history allure-results/history && rm -r allure-report || true",
+    "allure:open": "allure open allure-report"
   },
   "keywords": [],
   "author": "",

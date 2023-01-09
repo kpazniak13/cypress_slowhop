@@ -1,6 +1,6 @@
 import { API_Functions } from "../../pages/api_functions_page";
 
-describe('NBP Web Api Testing', () => {
+describe('NBP Web Api Testing', () => { 
     const api_functions = new API_Functions();
     const urlsTable = {
         exchangeratesTodayUSD: 'http://api.nbp.pl/api/exchangerates/rates/c/usd/today/?format=json', 
@@ -12,7 +12,15 @@ describe('NBP Web Api Testing', () => {
         exchangeratesTableACHF: 'http://api.nbp.pl/api/exchangerates/rates/a/chf/'
     }
     
+    before(() => {
+        cy.allure()
+            .epic('API calls')
+            .feature('Bank application')
+            .suite('NBPI API tests suite');
+    })
+
     it('Testing today`s USD exchange rates', () => {
+        cy.allure().story('Todays rate');
         api_functions.getRecordsFromTable(urlsTable.exchangeratesTodayUSD)
                         .then(response => {
                             expect(response.headers['content-type']).includes('application/json');
@@ -23,6 +31,7 @@ describe('NBP Web Api Testing', () => {
     });
 
     it('Testing Current table of exchange rates of type A', () => {
+        cy.allure().story('A rate')
         api_functions.getRecordsFromTable(urlsTable.exchangeratesTableA)
                         .then(response => {
                             expect(response.body).not.to.be.empty
@@ -47,6 +56,7 @@ describe('NBP Web Api Testing', () => {
     });
 
     it('Testing exchange rate of currency BRL from the exchange rate table of type B', () => {
+        cy.allure().story('B rate')
         api_functions.getRecordsFromTable(urlsTable.exchangeratesTableB)
                         .then(response => {
                             expect(response.body).has.property('country', 'Brazylia');
@@ -57,6 +67,7 @@ describe('NBP Web Api Testing', () => {
     });
 
     it('Testing the table of type A published today, if today`s table has not been published yet, the 404 error code is returned', () => {
+        cy.allure().story('A rate today')
         api_functions.getRecordsFromTableWithNoStatusFail(urlsTable.exchangeratesTableAToday)
                         .then(response => {
                             if(response.status == 200) {
@@ -76,6 +87,7 @@ describe('NBP Web Api Testing', () => {
     });
 
     it('Testing series of the last 10 quotations of GBP average exchange rate in the JSON', () => {
+        cy.allure().story('JSON rate')
         api_functions.getRecordsFromTable(urlsTable.exchangeratesTableAGBP10Days)
                         .then(response => {
                             expect(response.body.rates.length).to.eq(10);
@@ -84,6 +96,7 @@ describe('NBP Web Api Testing', () => {
     });
 
     it('Testing series of GBP average exchange rates from 2012-01-01 to 2012-01-31', () => {
+        cy.allure().story('GBP rate')
         api_functions.getRecordsFromTable(urlsTable.exchangeratesTableAGBPDate)
                         .then(response => {
                             expect(response.body.rates.length).to.eq(21);
@@ -94,6 +107,7 @@ describe('NBP Web Api Testing', () => {
     });
 
     it('Testing forbidden PUT request', () => {
+        cy.allure().story('GBP rate')
         const body = {
             code: 'GBP'
         }

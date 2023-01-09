@@ -12,8 +12,8 @@ describe('Smoke tests set for Slowhop.pl', () => {
     const eventDetailsPage = new EventDetailsPage();
     const catalogPage = new CatalogPage();
     const data = {
-        magicNumber: 42,
-        examples: true
+        browser: "chrome",
+        browser_version: 8.5
     };
     const textForAddress = 'Poland';
     const urlLastMinuteToValidate = '/last-minute/v2';
@@ -58,17 +58,25 @@ describe('Smoke tests set for Slowhop.pl', () => {
         }
     ]
 
-    beforeEach(() => {
-        homePage.navigateToSlowhop();
+    before(() => {
+        cy.log('This is the log from Before hook');
         cy.allure()
             .writeEnvironmentInfo(data)
             .parameter(
                 'initial environment info',
                 JSON.stringify(data, null, 2)
             );
+    })
+
+    beforeEach(() => {
+        cy.log('This is the log from Before Each hook');
+        homePage.navigateToSlowhop();
+        cy.allure().feature('UI Tests Feature')
     });
 
-    it('visits the Slowhop.pl and verifies the navigation bar', () => {
+    it('Visiting the Slowhop.pl and verifying the navigation bar', () => {
+        cy.log('This is the log from the Test');
+        cy.allure().severity('critical');
         homePage.getNavigationBarItems()
                     .should('have.length', 5)
                     .and('contain.text', 'MIEJSCA')
@@ -91,7 +99,7 @@ describe('Smoke tests set for Slowhop.pl', () => {
                     .should('exist');
     });
 
-    context('checks events at Wydarzenia tab', () => {
+    context('Checking events at Wydarzenia tab', () => {
         it('checks the first event', () => {
             let firstEventTitle = '';
     
@@ -111,7 +119,7 @@ describe('Smoke tests set for Slowhop.pl', () => {
                         });
         });
 
-        it('checks the specified event', () => {
+        it('Checking the specified event', () => {
             homePage.navigateToEvents();
             eventsPage.getSearchResults().should('exist');
             eventsPage.getSearchResults()
@@ -143,8 +151,8 @@ describe('Smoke tests set for Slowhop.pl', () => {
         });
     });
     
-    it('checks the first item at Last Minute tab', () => {
-        cy.allure().startStep('step started');
+    it('Checking the first item at Last Minute tab', () => {
+        cy.allure().startStep('first step started');
         homePage.getLastMinuteLink()
                     .should('have.class', 'red')
                     .click()
@@ -157,6 +165,8 @@ describe('Smoke tests set for Slowhop.pl', () => {
                         .first()
                         .invoke('removeAttr', 'target')
                         .click();
+        cy.allure().endStep();
+        cy.allure().startStep('second step started');
         eventDetailsPage.validateUrlContains(urlLastMinuteToValidate);
         eventDetailsPage.getBookingRequestSection().should('exist');
         eventDetailsPage.validateAboutPlaceSectionTitle();
@@ -180,7 +190,7 @@ describe('Smoke tests set for Slowhop.pl', () => {
         cy.allure().endStep();
     });
 
-    it('checks the search filter', () => {
+    it('Checking the search filter', () => {
         cy.allure().logStep('Started to test filter search');
         homePage.clickExploreAndBookBtn();
         catalogPage.getPlacesField()
@@ -226,11 +236,23 @@ describe('Smoke tests set for Slowhop.pl', () => {
         cy.allure().logStep('Finished to test filter search');
     });
 
-    it.skip('should be skipped', () => {});
+    it.skip('Should be skipped', () => {});
     
+    it('Writing executors.json file', () => {
+        const currentHour = new Date().getHours();
+        cy.allure().writeExecutorInfo({
+            name: 'Allure report for examples',
+            type: 'github action', 
+            buildOrder: currentHour,
+            buildName: 'CI RUN',
+            buildUrl:
+                'https://github.com/kpazniak13/cypress_slowhop'
+        });
+    });
+
     context('It tests the search filter', () => {
         filterTestData.forEach(element => {
-            it(`verifies that the ${element.fieldName} filter and returns correct results`, () => {
+            it(`Verifying that the ${element.fieldName} filter and returns correct results`, () => {
                 cy.allure()
                     .startStep('parameters should be in this step')
                     .parameter('fieldName', element.fieldName);

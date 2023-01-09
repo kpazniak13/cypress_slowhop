@@ -1,7 +1,7 @@
 import { faker } from "@faker-js/faker";
 import { API_Functions } from "../../pages/api_functions_page";
 
-describe('WHen I test all the PUT operations on Gorest User table', () => {
+describe('PUT operations on Gorest User table', () => {
     let userId;
     let randomNameEditted = faker.name.fullName();
     let randomEmailEditted = faker.internet.email();
@@ -52,9 +52,14 @@ describe('WHen I test all the PUT operations on Gorest User table', () => {
             .then((data) => {
                 userId = data.body.id;
             });
+        cy.allure()
+            .epic('API calls')
+            .feature('Gorest application')
+            .suite('Gorest API tests suite')
+            .subSuite('PUT operation');
     });
 
-    it('Then updating all the fields of the created user works correctly', () => {
+    it('Veryfying that updating all the fields of the created user works correctly', () => {
         const body = {
             name: randomNameEditted,
             email: randomEmailEditted,
@@ -72,9 +77,12 @@ describe('WHen I test all the PUT operations on Gorest User table', () => {
                         })
     });
 
-    context("Updtaing name field", () => {
+    specify("Updtaing email field", () => {
         dataSetValuesEmail.forEach((item) => {
-            it(`Then updating the email with ${item.value} returns status ${item.status}`, () => {
+            it(`Updating the email with ${item.value} returns status ${item.status}`, () => {
+                cy.allure()
+                    .suite('Gorest API tests suite')
+                    .subSuite('PUT operation');
                 const body = {
                     email: item.value
                 }
@@ -87,9 +95,12 @@ describe('WHen I test all the PUT operations on Gorest User table', () => {
         });
     });
 
-    context("Updtaing name field", () => {
+    specify("Updtaing name field", () => {
         dataSetValuesName.forEach((item) => {
-            it(`Then updating the name with ${item.value} returns status ${item.status}`, () => {
+            it(`Updating the name with ${item.value} returns status ${item.status}`, () => {
+                cy.allure()
+                    .suite('Gorest API tests suite')
+                    .subSuite('PUT operation');
                 const body = {
                     name: item.value
                 }
@@ -102,7 +113,7 @@ describe('WHen I test all the PUT operations on Gorest User table', () => {
         });
     });
 
-    it('Then updating the name on incorrect endpoint throws error', () => {
+    it('Updating the name on incorrect endpoint throws error', () => {
         const body = {
             name: randomNameEditted
         }

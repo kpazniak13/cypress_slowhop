@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker';
 import { API_Functions } from "../../pages/api_functions_page";
 
-describe('WHen I test the process of CRUD operations for users on Gorest', () => {
+describe('CRUD operations for users on Gorest', () => {
     const randomName = faker.name.fullName();
     const randomEmail = faker.internet.email();
     const api_functions = new API_Functions();
@@ -10,7 +10,15 @@ describe('WHen I test the process of CRUD operations for users on Gorest', () =>
         users: 'https://gorest.co.in/public/v2/users'
     };
 
-    it('Then getting the list of existing users works correctly', () => {
+    before(() => {
+        cy.allure()
+            .epic('API calls')
+            .feature('Gorest application')
+            .suite('Gorest API tests suite')
+            .subSuite('CRUD operations');
+    })
+
+    it('Getting the list of existing users works correctly', () => {
         api_functions.getRecordsFromTable(urlsTable.users)
                         .then(response => {
                             expect(response.headers['content-type']).includes('application/json');
@@ -19,7 +27,7 @@ describe('WHen I test the process of CRUD operations for users on Gorest', () =>
                         });
     });
 
-    it('Then creating a new user works correctly', () => {
+    it('Creating a new user works correctly', () => {
         const body = {
             name: randomName,
             email: randomEmail,
@@ -38,7 +46,7 @@ describe('WHen I test the process of CRUD operations for users on Gorest', () =>
                         });
     });
 
-    it('Then finding the created user returns the correct item', () => {
+    it('Finding the created user returns the correct item', () => {
         api_functions.getRecordsFromTableWithToken(urlsTable.users + `/${userId}`)
                         .then(response => {
                             expect(response.status).to.equal(200);
@@ -49,7 +57,7 @@ describe('WHen I test the process of CRUD operations for users on Gorest', () =>
                         });
     });
 
-    it('Then updating the data of the created user works correctly', () => {
+    it('Updating the data of the created user works correctly', () => {
         const randomNameEditted = faker.name.fullName();
         const randomEmailEditted= faker.internet.email();
         const body = {
@@ -67,7 +75,7 @@ describe('WHen I test the process of CRUD operations for users on Gorest', () =>
                         });
     });
 
-    it('Then removing the created user works correctly', () => {
+    it('Removing the created user works correctly', () => {
         api_functions.deleteWithToken(urlsTable.users + `/${userId}`)
                         .then(response => {
                             expect(response.body).to.be.empty;
@@ -75,7 +83,7 @@ describe('WHen I test the process of CRUD operations for users on Gorest', () =>
                         });
     });
 
-    it('Then error message is shown when I am trying to get the deleted user', () => {
+    it('Veryfying that the error message is shown when I am trying to get the deleted user', () => {
         api_functions.getRecordsFromTableWithNoStatusFail(urlsTable.users + `/${userId}`)
                         .then(response => {
                             expect(response.status).is.eq(404);

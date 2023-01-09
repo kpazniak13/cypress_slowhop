@@ -1,6 +1,6 @@
 import { API_Functions } from "../../pages/api_functions_page";
 
-describe('WHen I test all the DELETE operations on Gorest User table', () => {
+describe('DELETE operations on Gorest User table', () => {
     let userId;
     const api_functions = new API_Functions();
     const urlsTable = {
@@ -9,35 +9,39 @@ describe('WHen I test all the DELETE operations on Gorest User table', () => {
     }
 
     before(() => {
+        cy.allure()
+            .epic('API calls')
+            .feature('Gorest application')
+            .suite('Gorest API tests suite')
+            .subSuite('Delete operation');
         cy.createAPIUser('api_gorest')
             .then((data) => {
                 userId = data.body.id;
             });
-            
     });
 
-    it('Then deleting with no auth token provided throws error', () => {
+    it('Deleting with no auth token provided throws error', () => {
         api_functions.deleteWithNoToken(urlsTable.usersCorrectEndpoint + `/${userId}`)
                         .then(response => {
                             expect(response.status).to.equal(404);
                         });
     });
 
-    it('Then deleting with incorrect endpoint throws error', () => {
+    it('Deleting with incorrect endpoint throws error', () => {
         api_functions.deleteWithNoToken(urlsTable.usersIncorrectEndpoint + `/${userId}`)
                         .then(response => {
                             expect(response.status).to.equal(404);
                         });
     });
 
-    it('Then deleting with no user id throws error', () => {
+    it('Deleting with no user id throws error', () => {
         api_functions.deleteWithNoToken(urlsTable.usersCorrectEndpoint)
                         .then(response => {
                             expect(response.status).to.equal(404);
                         });
     });
 
-    it('Then deleting with all the fields of the created user works correctly', () => {
+    it('Deleting with all the fields of the created user works correctly', () => {
         api_functions.deleteWithToken(urlsTable.usersCorrectEndpoint + `/${userId}`)
                         .then(response => {
                             expect(response.status).to.equal(204);

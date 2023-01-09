@@ -1,6 +1,6 @@
 import { API_Functions } from "../../pages/api_functions_page";
 
-describe('WHen I test all the GET operations on Gorest', () => {
+describe('GET operations on Gorest', () => {
     let userData = {};
     const api_functions = new API_Functions();
     const urlsTable = {
@@ -16,9 +16,14 @@ describe('WHen I test all the GET operations on Gorest', () => {
             .then((data) => {
                 userData = data;
             });
+        cy.allure()
+            .epic('API calls')
+            .feature('Gorest application')
+            .suite('Gorest API tests suite')
+            .subSuite('GET operation');
     })
 
-    it('Then getting the list of existing users works correctly', () => {
+    it('Getting the list of existing users works correctly', () => {
         api_functions.getRecordsFromTable(urlsTable.users)
             .then(response => {
                 expect(response.headers['content-type']).includes('application/json');
@@ -27,7 +32,7 @@ describe('WHen I test all the GET operations on Gorest', () => {
             });
     });
 
-    it('Then getting only active users returns correct results', () => {
+    it('Getting only active users returns correct results', () => {
         api_functions.getRecordsFromTable(urlsTable.activeUsersOnly)
                         .then(response => {
                             response.body.forEach(element => {
@@ -36,14 +41,14 @@ describe('WHen I test all the GET operations on Gorest', () => {
                         });
     });
 
-    it('Then it is NOT possible to get the specific user by its id without the access token', () => {
+    it('Veryfying that it is NOT possible to get the specific user by its id without the access token', () => {
         api_functions.getRecordsFromTableWithNoStatusFail(urlsTable.users + `/${userData.userId}`)
                         .then(response => {
                             expect(response.status).is.eq(404);
                         });
     });
 
-    it('Then it is possible to get the specific user by its id', () => {
+    it('Veryfying that it is possible to get the specific user by its id', () => {
         api_functions.getRecordsFromTableWithToken(urlsTable.users + `/${userData.userId}`)
                         .then(response => {
                             expect(response.status).is.eq(200);
@@ -55,7 +60,7 @@ describe('WHen I test all the GET operations on Gorest', () => {
                         });
     });
 
-    it('Then getting the list of existing posts works correctly', () => {
+    it('Getting the list of existing posts works correctly', () => {
         api_functions.getRecordsFromTable(urlsTable.posts)
                         .then(response => {
                             expect(response.status).to.equal(200);
@@ -67,7 +72,7 @@ describe('WHen I test all the GET operations on Gorest', () => {
                         });
     });
 
-    it('Then getting the post of a specified user returns the correct value', () => {
+    it('Getting the post of a specified user returns the correct value', () => {
         api_functions.getRecordsFromTableWithToken(urlsTable.users + `/${userData.userId}` + '/posts')
                         .then(response => {
                             expect(response.status).to.equal(200);
@@ -77,7 +82,7 @@ describe('WHen I test all the GET operations on Gorest', () => {
                         });
     });
 
-    it('Then getting the list of existing post comments works correctly', () => {
+    it('Getting the list of existing post comments works correctly', () => {
         api_functions.getRecordsFromTable(urlsTable.comments)
                         .then(response => {
                             expect(response.status).to.equal(200);
@@ -89,7 +94,7 @@ describe('WHen I test all the GET operations on Gorest', () => {
                         });
     });
 
-    it('Then getting the post of a specified user returns the correct value', () => {
+    it('Getting the post of a specified user returns the correct value', () => {
         api_functions.getRecordsFromTableWithToken(urlsTable.posts + `/${userData.postId}` + '/comments')
                         .then(response => {
                             expect(response.status).to.equal(200);
@@ -101,7 +106,7 @@ describe('WHen I test all the GET operations on Gorest', () => {
                         });
     });
 
-    it('Then getting the list of existing todos comments works correctly', () => {
+    it('Getting the list of existing todos comments works correctly', () => {
         api_functions.getRecordsFromTable(urlsTable.todos)
                         .then(response => {
                             expect(response.status).to.equal(200);
@@ -114,7 +119,7 @@ describe('WHen I test all the GET operations on Gorest', () => {
                         });
     });
 
-    it('Then getting the todo of a specified user returns the correct value', () => {
+    it('Getting the todo of a specified user returns the correct value', () => {
         api_functions.getRecordsFromTableWithToken(urlsTable.users + `/${userData.userId}` + '/todos')
                         .then(response => {
                             expect(response.status).to.equal(200);
